@@ -20,7 +20,6 @@
         <encoding>UTF-8</encoding>
 
         <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
-        <!-- hex(md5(密码，默认noah123321)) -->
         <controller.access.token>65ec9832286b6c6436aad2ac49cbbaf7</controller.access.token>
     </properties>
 
