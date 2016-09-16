@@ -30,9 +30,9 @@ public class Server {
     public void start() throws Exception {
         logger.info("start.....");
 
-        // 工作线程
+        // 宸ヤ綔绾跨▼
         NioEventLoopGroup workGroup = new NioEventLoopGroup(2);
-        // 数据量不会太大，读写不用分离
+        // 鏁版嵁閲忎笉浼氬お澶э紝璇诲啓涓嶇敤鍒嗙
         NioEventLoopGroup parentGroup = workGroup;
 
         int port = 8023;
