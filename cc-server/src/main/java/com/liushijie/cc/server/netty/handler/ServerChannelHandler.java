@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ChannelHandler.Sharable
-public class ServerChannelHander extends SimpleChannelInboundHandler<String> {
-    private final Logger logger = LoggerFactory.getLogger(ServerChannelHander.class);
+public class ServerChannelHandler extends SimpleChannelInboundHandler<String> {
+    private final Logger logger = LoggerFactory.getLogger(ServerChannelHandler.class);
 
     private Map<String, Channel> channelMap = new HashMap<>();
 

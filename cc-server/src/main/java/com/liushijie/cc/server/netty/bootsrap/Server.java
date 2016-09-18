@@ -1,6 +1,6 @@
 package com.liushijie.cc.server.netty.bootsrap;
 
-import com.liushijie.cc.server.netty.handler.ServerChannelHander;
+import com.liushijie.cc.server.netty.handler.ServerChannelHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -25,7 +25,7 @@ public class Server {
 
     private static final StringDecoder DECODER = new StringDecoder();
     private static final StringEncoder ENCODER = new StringEncoder();
-    private static ServerChannelHander SERVER_HANDLER = new ServerChannelHander();
+    private static ServerChannelHandler SERVER_HANDLER = new ServerChannelHandler();
 
     public void start() throws Exception {
         logger.info("start.....");
@@ -59,9 +59,6 @@ public class Server {
                     });
 
             ChannelFuture channelFuture = bootstrap.bind(port).sync();
-            new Thread(() -> {
-                ;
-            }).start();
             channelFuture.channel().closeFuture().sync();
 
         } finally {

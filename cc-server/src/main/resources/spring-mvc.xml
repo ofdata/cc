@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="GBK"?>
+<?xml version="1.0" encoding="utf-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
@@ -23,7 +23,7 @@
 
     <mvc:annotation-driven>
         <mvc:message-converters register-defaults="true">
-            <!-- StringHttpMessageConverter±àÂëÎªUTF-8£¬·ÀÖ¹ÂÒÂë -->
+            <!-- StringHttpMessageConverterç¼–ç ä¸ºUTF-8ï¼Œé˜²æ­¢ä¹±ç  -->
             <bean class="org.springframework.http.converter.StringHttpMessageConverter">
                 <constructor-arg value="${encoding}"/>
                 <property name="supportedMediaTypes">
@@ -50,11 +50,11 @@
         <property name="resourceLoaderPath" value="/WEB-INF/vm/,classpath:com/jd/noah/"/>
         <property name="velocityProperties">
             <props>
-                <!-- Ö¸¶¨Ä£°åÒýÇæ½øÐÐÄ£°å´¦ÀíµÄ±àÂë -->
+                <!-- æŒ‡å®šæ¨¡æ¿å¼•æ“Žè¿›è¡Œæ¨¡æ¿å¤„ç†çš„ç¼–ç  -->
                 <prop key="input.encoding">${encoding}</prop>
-                <!-- Ö¸¶¨Êä³öÁ÷µÄ±àÂë -->
+                <!-- æŒ‡å®šè¾“å‡ºæµçš„ç¼–ç  -->
                 <prop key="output.encoding">${encoding}</prop>
-                <!-- ²»»º´æ£¬ÉÙÁ¿Ä£°åÊ±Ê¹ÓÃ -->
+                <!-- ä¸ç¼“å­˜ï¼Œå°‘é‡æ¨¡æ¿æ—¶ä½¿ç”¨ -->
                 <prop key="spring.resource.loader.cache">false</prop>
             </props>
         </property>
@@ -70,7 +70,7 @@
     </bean>
 
 
-    <!-- Òì³£´¦ÀíÆ÷ -->
+    <!-- å¼‚å¸¸å¤„ç†å™¨ -->
     <bean id="exceptionHandlerExceptionResolver"
           class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver"/>
 

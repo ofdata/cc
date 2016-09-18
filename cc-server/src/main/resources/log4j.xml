@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='GBK' ?>
+<?xml version='1.0' encoding='utf-8' ?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
@@ -8,7 +8,7 @@
         </layout>
     </appender>
 
-    <appender name="FILE" class="org.apache.log4j.DailyMaxRollingFileAppender">
+    <appender name="FILE" class="org.apache.log4j.FileAppender">
         <param name="DatePattern" value="'.'yyyy-MM-dd" />
         <param name="MaxBackupIndex" value="10"/>
         <param name="Append" value="true" />
