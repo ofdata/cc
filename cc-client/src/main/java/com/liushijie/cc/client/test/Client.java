@@ -1,7 +1,7 @@
 package com.liushijie.cc.client.test;
 
-import com.liushijie.cc.client.hadnler.CCClientHandler;
-import com.liushijie.cc.client.hadnler.ConnectionHandler;
+import com.liushijie.cc.client.handler.CCClientHandler;
+import com.liushijie.cc.client.handler.ConnectionHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;

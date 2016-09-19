@@ -1,4 +1,4 @@
-package com.liushijie.cc.client.hadnler;
+package com.liushijie.cc.client.handler;
 
 import com.liushijie.cc.client.test.Client;
 import io.netty.bootstrap.Bootstrap;
@@ -24,6 +24,7 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
+
     }
 
     @Override
