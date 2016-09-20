@@ -7,9 +7,11 @@ import org.slf4j.LoggerFactory;
 @ChannelHandler.Sharable
 public class CCClientHandler extends SimpleChannelInboundHandler<String> {
 
+    private String id;
+
     private final Logger logger = LoggerFactory.getLogger(CCClientHandler.class);
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String o) throws Exception {
-        logger.info("get message from server:" + o);
+        logger.info("message from server     " + o);
     }
 
     @Override
@@ -20,11 +22,13 @@ public class CCClientHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+        id = "" + System.currentTimeMillis();
         super.channelRegistered(ctx);
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        ctx.channel().writeAndFlush(id + "\r\n");
         super.channelActive(ctx);
     }
 }

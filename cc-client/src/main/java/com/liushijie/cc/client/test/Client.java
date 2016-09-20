@@ -11,13 +11,15 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
 public class Client {
-    private final Logger logger = LoggerFactory.getLogger(Client.class);
+    private static final Logger logger = LoggerFactory.getLogger(Client.class);
 
     private static final StringDecoder DECODER = new StringDecoder();
     private static final StringEncoder ENCODER = new StringEncoder();
@@ -27,88 +29,41 @@ public class Client {
     static final String HOST = System.getProperty("host", "127.0.0.1");
     static final int PORT = 8023;
 
-    public String id = "test1";
-
-    public static void main(String[] args) throws InterruptedException {
-        new Client().start();
-        Thread.sleep(Long.MAX_VALUE);
+    public static void main(String[] args) {
+        Client.configureBootstrap(new Bootstrap()).connect();
     }
 
-    private void start() throws InterruptedException {
-        EventLoopGroup group = new NioEventLoopGroup();
-        try {
-            createBootstrap(new Bootstrap(), group);
-
-        } finally {
-            group.shutdownGracefully();
-        }
+    private static Bootstrap configureBootstrap(Bootstrap b) {
+        return configureBootstrap(b, new NioEventLoopGroup());
     }
 
-
-
-    public Channel createBootstrap(Bootstrap bootstrap, EventLoopGroup eventLoop) throws InterruptedException {
-        ConnectionHandler connectionHandler = new ConnectionHandler(this);
-        bootstrap.group(eventLoop)
+    public static Bootstrap configureBootstrap(Bootstrap b, EventLoopGroup eventLoop) {
+        ConnectionHandler connectionHandler = new ConnectionHandler();
+        b.group(eventLoop)
                 .channel(NioSocketChannel.class)
+                .remoteAddress(HOST, PORT)
                 .handler(new ChannelInitializer<SocketChannel>() {
                     protected void initChannel(SocketChannel channel) throws Exception {
                         ChannelPipeline pipeline = channel.pipeline();
-                        // Add the text line codec combination first,
-                        pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
-                        pipeline.addLast(DECODER);
-                        pipeline.addLast(ENCODER);
+//                        pipeline.addLast(new LoggingHandler(LogLevel.INFO));
 
-                        // and then business logic.
-                        pipeline.addLast(CLIENT_HANDLER);
-                        pipeline.addLast(connectionHandler);
+                        pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
+                        pipeline.addLast(DECODER, ENCODER);
+
+                        pipeline.addLast(CLIENT_HANDLER, connectionHandler);
+                        // TODO 增加心跳handler
                     }
                 });
 
-        // 连接
-        ChannelFuture channelFuture = bootstrap.connect(HOST, PORT).sync();
-        // 增加断线重连监听
-        Channel channel = channelFuture.channel();
-        channelFuture.addListener((ChannelFuture future) -> {
-            if (!future.isSuccess()) {
-                logger.info("cc : the connection is down, reconnect begin...");
-                eventLoop.schedule(() -> createBootstrap(new Bootstrap(), channel.eventLoop()), 1L, TimeUnit.SECONDS);
-            } else {
-                logger.info("cc : the connection is startup...");
+        return b;
+    }
+
+    public static void connect(Bootstrap b) {
+        b.connect().addListener((ChannelFuture future) -> {
+            if (future.cause() != null) {
+                logger.error("Failed to connect: " + future.cause());
             }
         });
-
-        Thread.sleep(100L);
-
-        process(channel);
-
-        return channel;
     }
 
-
-    private void process(Channel ch) {
-
-        // Sends the received line to the server.
-        ChannelFuture lastWriteFuture = ch.writeAndFlush(id + "\r\n");
-
-
-        if (1!=1) { // TODO 关闭条件
-            try {
-                ch.closeFuture().sync();
-            } catch (InterruptedException e) {
-                logger.error(e.getMessage(), e);
-                e.printStackTrace();
-            }
-        }
-
-        // Wait until all messages are flushed before closing the channel.
-        if (lastWriteFuture != null) {
-            try {
-                lastWriteFuture.sync();
-            } catch (InterruptedException e) {
-                logger.error(e.getMessage(), e);
-                e.printStackTrace();
-            }
-
-        }
-    }
 }

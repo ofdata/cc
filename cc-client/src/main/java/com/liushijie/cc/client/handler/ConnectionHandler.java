@@ -6,6 +6,8 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.EventLoop;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
@@ -15,12 +17,7 @@ import java.util.concurrent.TimeUnit;
  */
 @ChannelHandler.Sharable
 public class ConnectionHandler extends SimpleChannelInboundHandler {
-
-    private Client client;
-
-    public ConnectionHandler(Client client) {
-        this.client = client;
-    }
+    private final Logger logger = LoggerFactory.getLogger(ConnectionHandler.class);
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -28,9 +25,19 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        EventLoop eventLoop = ctx.channel().eventLoop();
-        eventLoop.schedule(() -> client.createBootstrap(new Bootstrap(), eventLoop), 1L, TimeUnit.SECONDS);
-        super.channelInactive(ctx);
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        final EventLoop loop = ctx.channel().eventLoop();
+        loop.schedule(() -> {
+            logger.info("channelUnregistered , reconnecting...");
+            Client.connect(Client.configureBootstrap(new Bootstrap(), loop));
+        }, 5, TimeUnit.SECONDS);
     }
+
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        cause.printStackTrace();
+        ctx.close();
+    }
+
 }
