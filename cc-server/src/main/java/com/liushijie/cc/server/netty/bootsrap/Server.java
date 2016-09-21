@@ -18,14 +18,16 @@ import io.netty.handler.logging.LoggingHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.Charset;
+
 /**
  * Created by liushijie on 16-9-5.
  */
 public class Server {
     private static final Logger logger = LoggerFactory.getLogger(Server.class);
 
-    private static final StringDecoder DECODER = new StringDecoder();
-    private static final StringEncoder ENCODER = new StringEncoder();
+    private static final StringDecoder DECODER = new StringDecoder(Charset.forName("UTF-8"));
+    private static final StringEncoder ENCODER = new StringEncoder(Charset.forName("UTF-8"));
     private static ServerChannelHandler SERVER_HANDLER = new ServerChannelHandler();
 
     public void start() throws Exception {

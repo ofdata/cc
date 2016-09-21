@@ -30,7 +30,7 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent ise = (IdleStateEvent) evt;
             // 超时处理
-            logger.error("发现超时，类型：{}：" + ise.state());
+            logger.error("发现超时，类型：{}", ise.state());
         }
     }
 

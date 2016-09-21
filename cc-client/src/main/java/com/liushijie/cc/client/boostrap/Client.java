@@ -15,6 +15,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,8 +25,8 @@ import java.util.concurrent.TimeUnit;
 public class Client {
     private static final Logger logger = LoggerFactory.getLogger(Client.class);
 
-    private static final StringDecoder DECODER = new StringDecoder();
-    private static final StringEncoder ENCODER = new StringEncoder();
+    private static final StringDecoder DECODER = new StringDecoder(Charset.forName("UTF-8"));
+    private static final StringEncoder ENCODER = new StringEncoder(Charset.forName("UTF-8"));
 
     private static final CCClientHandler CLIENT_HANDLER = new CCClientHandler();
 
@@ -36,7 +37,6 @@ public class Client {
     private static int writerIdleTimeSeconds = 5;
     private static int allIdleTimeSeconds = 5;
     public static int retry_delay = 5;
-
 
     public static void main(String[] args) {
         Client.configureBootstrap(new Bootstrap()).connect();
@@ -54,8 +54,6 @@ public class Client {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     protected void initChannel(SocketChannel channel) throws Exception {
                         ChannelPipeline pipeline = channel.pipeline();
-//                        pipeline.addLast(new LoggingHandler(LogLevel.INFO));
-
                         pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
                         pipeline.addLast(DECODER, ENCODER);
                         pipeline.addLast(new IdleStateHandler(readerIdleTimeSeconds, writerIdleTimeSeconds, allIdleTimeSeconds));
