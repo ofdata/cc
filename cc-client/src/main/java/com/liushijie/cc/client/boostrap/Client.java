@@ -1,4 +1,4 @@
-package com.liushijie.cc.client.test;
+package com.liushijie.cc.client.boostrap;
 
 import com.liushijie.cc.client.handler.CCClientHandler;
 import com.liushijie.cc.client.handler.ConnectionHandler;
@@ -11,13 +11,16 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ *
+ * Created by liushijie on 16-9-8.
+ */
 public class Client {
     private static final Logger logger = LoggerFactory.getLogger(Client.class);
 
@@ -26,8 +29,14 @@ public class Client {
 
     private static final CCClientHandler CLIENT_HANDLER = new CCClientHandler();
 
-    static final String HOST = System.getProperty("host", "127.0.0.1");
-    static final int PORT = 8023;
+    private static final String HOST = System.getProperty("host", "127.0.0.1");
+    private static final int PORT = 8023;
+
+    private static int readerIdleTimeSeconds = 5;
+    private static int writerIdleTimeSeconds = 5;
+    private static int allIdleTimeSeconds = 5;
+    public static int retry_delay = 5;
+
 
     public static void main(String[] args) {
         Client.configureBootstrap(new Bootstrap()).connect();
@@ -49,9 +58,9 @@ public class Client {
 
                         pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
                         pipeline.addLast(DECODER, ENCODER);
-
+                        pipeline.addLast(new IdleStateHandler(readerIdleTimeSeconds, writerIdleTimeSeconds, allIdleTimeSeconds));
                         pipeline.addLast(CLIENT_HANDLER, connectionHandler);
-                        // TODO 增加心跳handler
+
                     }
                 });
 
@@ -60,10 +69,13 @@ public class Client {
 
     public static void connect(Bootstrap b) {
         b.connect().addListener((ChannelFuture future) -> {
+            if (!future.isSuccess()) {
+                final EventLoop loop = future.channel().eventLoop();
+                loop.schedule(() -> connect(configureBootstrap(new Bootstrap(), loop)), retry_delay, TimeUnit.SECONDS);
+            }
             if (future.cause() != null) {
                 logger.error("Failed to connect: " + future.cause());
             }
         });
     }
-
 }
