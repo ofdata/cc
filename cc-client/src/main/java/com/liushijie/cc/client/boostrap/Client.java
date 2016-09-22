@@ -33,9 +33,9 @@ public class Client {
     private static final String HOST = System.getProperty("host", "127.0.0.1");
     private static final int PORT = 8023;
 
-    private static int readerIdleTimeSeconds = 5;
-    private static int writerIdleTimeSeconds = 5;
-    private static int allIdleTimeSeconds = 5;
+    private static int readerIdleTimeSeconds = 20;
+    private static int writerIdleTimeSeconds = 60;
+    private static int allIdleTimeSeconds = 60;
     public static int retry_delay = 5;
 
     public static void main(String[] args) {

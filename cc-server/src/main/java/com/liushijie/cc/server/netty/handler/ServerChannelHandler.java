@@ -20,8 +20,9 @@ public class ServerChannelHandler extends SimpleChannelInboundHandler<String> {
     private Map<String, Channel> channelMap = new HashMap<>();
 
     @Override
-    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        logger.info("client[{}] connected", ctx.channel().remoteAddress());
+        // 推送测试
         new Thread(()->{
             while (true) {
                 if (!channelMap.isEmpty()) {
@@ -47,6 +48,11 @@ public class ServerChannelHandler extends SimpleChannelInboundHandler<String> {
                 }
             }
         }).start();
+    }
+
+    @Override
+    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+        super.channelRegistered(ctx);
     }
 
     @Override
