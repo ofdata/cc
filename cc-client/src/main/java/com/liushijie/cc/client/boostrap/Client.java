@@ -67,10 +67,6 @@ public class Client {
 
     public static void connect(Bootstrap b) {
         b.connect().addListener((ChannelFuture future) -> {
-            if (!future.isSuccess()) {
-                final EventLoop loop = future.channel().eventLoop();
-                loop.schedule(() -> connect(configureBootstrap(new Bootstrap(), loop)), retry_delay, TimeUnit.SECONDS);
-            }
             if (future.cause() != null) {
                 logger.error("Failed to connect: " + future.cause());
             }
