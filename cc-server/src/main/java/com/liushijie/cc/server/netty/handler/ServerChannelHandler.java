@@ -1,5 +1,7 @@
 package com.liushijie.cc.server.netty.handler;
 
+import com.liushijie.cc.common.BaseMessage;
+import com.liushijie.cc.common.DataType;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -10,20 +12,20 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 @ChannelHandler.Sharable
-public class ServerChannelHandler extends SimpleChannelInboundHandler<String> {
+public class ServerChannelHandler extends SimpleChannelInboundHandler<BaseMessage<String>> {
     private final Logger logger = LoggerFactory.getLogger(ServerChannelHandler.class);
 
-//    private Map<String, Channel> channelMap = new ConcurrentHashMap<>();
+    //    private Map<String, Channel> channelMap = new ConcurrentHashMap<>();
     private Map<String, Channel> channelMap = new HashMap<>();
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.info("client[{}] connected", ctx.channel().remoteAddress());
         // 推送测试
-        new Thread(()->{
+        new Thread(() -> {
             while (true) {
                 if (!channelMap.isEmpty()) {
                     Iterator<Map.Entry<String, Channel>> iterator = channelMap.entrySet().iterator();
@@ -31,10 +33,10 @@ public class ServerChannelHandler extends SimpleChannelInboundHandler<String> {
                     while (iterator.hasNext()) {
                         Map.Entry<String, Channel> entry = iterator.next();
                         String k = entry.getKey();
-                        Channel v= entry.getValue();
+                        Channel v = entry.getValue();
                         if (v.isActive()) {
                             logger.info("send msg to {}", k);
-                            v.writeAndFlush(now + "\r\n");
+                            v.writeAndFlush(new BaseMessage<>(now, DataType.NORMAL));
                         } else {
                             iterator.remove();
                             logger.error("key {} is inactive, removed...", k);
@@ -56,12 +58,12 @@ public class ServerChannelHandler extends SimpleChannelInboundHandler<String> {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, BaseMessage<String> msg) throws Exception {
 
-        logger.info("cc : add msg({})'s channel to the channelMap...", msg);
-        if (!channelMap.containsKey(msg) || !channelMap.get(msg).isActive()) {
-            channelMap.put(msg, ctx.channel());
-            ctx.writeAndFlush("touch ok!\r\n");
+        String clientId = msg.getData();
+        logger.info("cc : add msg({})'s channel to the channelMap...", clientId);
+        if (!channelMap.containsKey(clientId) || !channelMap.get(clientId).isActive()) {
+            channelMap.put(clientId, ctx.channel());
         }
     }
 }

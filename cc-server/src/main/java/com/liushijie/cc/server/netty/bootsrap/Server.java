@@ -2,23 +2,19 @@ package com.liushijie.cc.server.netty.bootsrap;
 
 import com.liushijie.cc.server.netty.handler.ServerChannelHandler;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.handler.codec.Delimiters;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.nio.charset.Charset;
 
 /**
  * Created by liushijie on 16-9-5.
@@ -26,8 +22,6 @@ import java.nio.charset.Charset;
 public class Server {
     private static final Logger logger = LoggerFactory.getLogger(Server.class);
 
-    private static final StringDecoder DECODER = new StringDecoder(Charset.forName("UTF-8"));
-    private static final StringEncoder ENCODER = new StringEncoder(Charset.forName("UTF-8"));
     private static ServerChannelHandler SERVER_HANDLER = new ServerChannelHandler();
 
     public void start() throws Exception {
@@ -49,8 +43,7 @@ public class Server {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
-                            pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
-                            pipeline.addLast(DECODER).addLast(ENCODER);
+                            pipeline.addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)), new ObjectEncoder());
 
                             pipeline.addLast(SERVER_HANDLER);
                         }
