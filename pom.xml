@@ -37,7 +37,7 @@
             <id>test</id>
             <properties>
                 <log.path>/export/home/tomcat/logs/cc/</log.path>
-                <log.level>DEBUG</log.level>
+                <log.level>INFO</log.level>
             </properties>
         </profile>
 

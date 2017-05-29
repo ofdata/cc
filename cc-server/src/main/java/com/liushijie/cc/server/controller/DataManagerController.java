@@ -1,6 +1,6 @@
-package com.liushijie.cc.server.base.controller;
+package com.liushijie.cc.server.controller;
 
-import com.lsj.c.server.base.service.ManagerService;
+import com.liushijie.cc.server.service.ManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,43 +13,31 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/manager")
-public class DataManagerController {
+public class DataManagerController extends BaseController {
 
     @Autowired
     private ManagerService managerService;
 
-    @RequestMapping("add")
+    @RequestMapping(value = "add", method = RequestMethod.POST)
     @ResponseBody
     public String insertConfig(String group, String dataId, String content) {
-        return updateConfig(group, dataId, content);
+        boolean success = managerService.insertConfig(group, dataId, content);
+        return commonResult(success);
     }
 
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
     @ResponseBody
     public String updateConfig(String group, String dataId, String content) {
-
-        return "/manager/update";
+        boolean success = managerService.updateConfig(group, dataId, content);
+        return commonResult(success);
     }
 
-    @RequestMapping("delete")
+    @RequestMapping(value = "delete", method = RequestMethod.POST)
     @ResponseBody
     public String deleteConfig(String group, String dataId) {
-
-        return "/manager/delete";
+        boolean success = managerService.deleteConfig(group, dataId);
+        return commonResult(success);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

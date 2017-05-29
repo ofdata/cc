@@ -13,7 +13,7 @@
 
     <context:annotation-config/>
 
-    <context:component-scan base-package="com.liushijie.cc.server.*" />
+    <context:component-scan base-package="com.liushijie.cc.server.*,com.liushijie.server.*" />
 
 
 </beans>

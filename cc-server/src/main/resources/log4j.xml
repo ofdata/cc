@@ -12,7 +12,7 @@
         <param name="DatePattern" value="'.'yyyy-MM-dd" />
         <param name="MaxBackupIndex" value="10"/>
         <param name="Append" value="true" />
-        <param name="file" value="${log.path}cc.log" />
+        <param name="file" value="cc.log" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d [%7r] %6p - %30.30c - %m%n" />
         </layout>

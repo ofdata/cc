@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-autowire="byName">
+
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <property name="url" value="${mysql.jdbc.url}"/>
+        <property name="username" value="${mysql.jdbc.username}"/>
+        <property name="password" value="${mysql.jdbc.password}"/>
+
+        <!-- 配置初始化大小、最小、最大 -->
+        <property name="validationQuery" value="select 1"/>
+        <property name="maxWait" value="500000"/>
+
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="mapperLocations" value="classpath*:mybatis/mappers/**/*.xml" />
+        <property name="typeAliasesPackage" value="com.liushijie.cc.server.dao.entity"/>
+        <!--<property name="typeAliases">-->
+            <!--<array>-->
+                <!--<value>com.liushijie.cc.server.dao.entity.ConfigInfo</value>-->
+            <!--</array>-->
+        <!--</property>-->
+    </bean>
+
+</beans>

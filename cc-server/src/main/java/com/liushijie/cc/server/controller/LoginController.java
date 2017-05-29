@@ -1,6 +1,6 @@
-package com.liushijie.cc.server.base.controller;
+package com.liushijie.cc.server.controller;
 
-import com.lsj.c.server.base.service.AdminService;
+import com.liushijie.cc.server.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;

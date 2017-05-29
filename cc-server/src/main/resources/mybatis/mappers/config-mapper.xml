@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.liushijie.cc.server.dao.ConfigDao">
+
+    <select id="select" resultType="ConfigInfo" parameterType="map">
+        select group_id as `group`,data_id as dataId,content, md5 from config_info where group_id=#{group} and data_id=#{dataId}
+    </select>
+
+    <insert id="insert" parameterType="ConfigInfo">
+        <![CDATA[
+  		INSERT INTO config_info (group_id, data_id, content, md5, gmt_create, gmt_modified) VALUES(#{group},#{dataId}, #{content},#{md5}, now(), now())
+  		]]>
+    </insert>
+
+    <update id="update"  parameterType="ConfigInfo" >
+        UPDATE config_info SET content = #{content}, md5 = #{md5}, gmt_modified = now() where group_id = #{group} and data_id = #{dataId}
+    </update>
+
+    <delete id="delete" parameterType="map">
+        DELETE  FROM config_info WHERE group_id = #{group} and data_id = #{dataId}
+    </delete>
+
+</mapper>

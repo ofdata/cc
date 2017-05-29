@@ -1,6 +1,6 @@
-package com.liushijie.cc.server.base.service;
+package com.liushijie.cc.server.service;
 
-import com.lsj.c.server.common.ResourceUtils;
+import com.liushijie.cc.server.common.ResourceUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
