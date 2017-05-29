@@ -11,11 +11,7 @@
 
     <context:property-placeholder location="classpath:resources.properties"/>
 
-    <bean id="accessToken" class="java.lang.String">
-        <constructor-arg value="${controller.access.token}"></constructor-arg>
-    </bean>
-
-    <context:component-scan base-package="com.jd.item.cc.server.web.controller.**" use-default-filters="false">
+    <context:component-scan base-package="com.liushijie.cc.server.web.controller.**" use-default-filters="false">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
         <context:include-filter type="annotation"
                                 expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
@@ -43,32 +39,6 @@
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
-
-
-    <bean id="mvcVelocityEngine" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
-        <property name="preferFileSystemAccess" value="false"/>
-        <property name="resourceLoaderPath" value="/WEB-INF/vm/,classpath:com/jd/noah/"/>
-        <property name="velocityProperties">
-            <props>
-                <!-- 指定模板引擎进行模板处理的编码 -->
-                <prop key="input.encoding">${encoding}</prop>
-                <!-- 指定输出流的编码 -->
-                <prop key="output.encoding">${encoding}</prop>
-                <!-- 不缓存，少量模板时使用 -->
-                <prop key="spring.resource.loader.cache">false</prop>
-            </props>
-        </property>
-    </bean>
-
-    <bean id="viewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
-        <property name="prefix" value=""/>
-        <property name="suffix" value=".vm"/>
-        <property name="cache" value="false"/>
-        <property name="contentType" value="text/html;charset=${encoding}"/>
-        <property name="exposeRequestAttributes" value="true"/>
-        <property name="requestContextAttribute" value="request"/>
-    </bean>
-
 
     <!-- 异常处理器 -->
     <bean id="exceptionHandlerExceptionResolver"
