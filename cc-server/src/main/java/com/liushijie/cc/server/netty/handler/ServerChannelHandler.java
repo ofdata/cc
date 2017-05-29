@@ -24,6 +24,9 @@ public class ServerChannelHandler extends SimpleChannelInboundHandler<BaseMessag
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.info("client[{}] connected", ctx.channel().remoteAddress());
+        Thread.sleep(100L);
+        logger.error("channelActive.now " + System.currentTimeMillis());
+
         // 推送测试
         new Thread(() -> {
             while (true) {

@@ -5,6 +5,8 @@ import com.liushijie.cc.common.DataType;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +22,13 @@ public class CCClientHandler extends SimpleChannelInboundHandler<BaseMessage<Lon
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         String clientId = ctx.channel().localAddress().toString();
         BaseMessage<String> register = new BaseMessage<>(clientId, DataType.REGISTER);
-
-        ctx.channel().writeAndFlush(register);
+        logger.info("channelActive..." + System.currentTimeMillis());
+        ctx.channel().writeAndFlush(register).addListener(new GenericFutureListener<Future<? super Void>>() {
+            @Override
+            public void operationComplete(Future<? super Void> future) throws Exception {
+                logger.info("channelActive.operationComplete time " + System.currentTimeMillis());
+            }
+        });
         logger.info("clientId is {}", clientId);
 
         super.channelActive(ctx);
