@@ -12,6 +12,7 @@
         <module>cc-server</module>
         <module>cc-client</module>
         <module>cc-common</module>
+        <module>demo</module>
     </modules>
 
     <properties>

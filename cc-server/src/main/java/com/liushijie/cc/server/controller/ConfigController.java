@@ -7,6 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * Created by liushijie on 17-5-26.
  */
@@ -19,15 +23,16 @@ public class ConfigController extends BaseController{
 
     @RequestMapping("get")
     @ResponseBody
-    public ConfigInfo get(String group, String dataId) {
+    public Map<String, Object> get(String group, String dataId) {
+
+        Map<String, Object> result = new LinkedHashMap<>(2);
+
         ConfigInfo configInfo = managerService.getConfig(group, dataId);
         if (configInfo != null) {
-            configInfo.setCreateTime(null);
-            configInfo.setDataId(null);
-            configInfo.setGroup(null);
-            configInfo.setModifyTime(null);
+            result.put("content", configInfo.getContent());
+            result.put("md5", configInfo.getMd5());
         }
-        return configInfo;
+        return result;
     }
 
 

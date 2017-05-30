@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
  * Created by liushijie on 5/29/17.
  */
 @ContextConfiguration(locations={"classpath*:/spring-config.xml"})
-public class ConfigTest extends AbstractTestNGSpringContextTests {
+public class ConfigServiceTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private ManagerService managerService;
 
