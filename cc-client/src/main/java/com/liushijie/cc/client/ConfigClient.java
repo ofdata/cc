@@ -1,5 +1,7 @@
 package com.liushijie.cc.client;
 
+import com.liushijie.cc.common.HttpUtil;
+
 import java.util.concurrent.*;
 
 /**
@@ -7,7 +9,7 @@ import java.util.concurrent.*;
  */
 public class ConfigClient {
 
-    private final ConcurrentHashMap<String, String> localCache = new ConcurrentHashMap<String, String>();
+    private final ConcurrentHashMap<String, ConfigCacheData> localCache = new ConcurrentHashMap<String, ConfigCacheData>();
 
 
     static {
@@ -21,8 +23,11 @@ public class ConfigClient {
         long period = 1;
         TimeUnit unit = TimeUnit.SECONDS;
         ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
-        service.scheduleAtFixedRate(() -> {
-            // TODO
+        service.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                // TODO
+            }
         }, initialDelay, period, unit);
     }
 
@@ -33,29 +38,57 @@ public class ConfigClient {
      * @return
      */
     public String getConfigInfo(String key) {
-        String value = null;
+        ConfigCacheData cacheData;
         if( localCache.containsKey(key)) {
-            value = localCache.get(key);
-            if (value == null) {
-                value = loadFromRemote(key);
-                if (value == null) {
-                    value = loadFromSnap(key);
-                }
+            cacheData = localCache.get(key);
+            if (cacheData != null) {
+                return cacheData.getValue();
             }
         }
+        try {
+            cacheData = loadFromRemote(getUrlStr(key));
 
-        return value;
+            if (cacheData != null) {
+                cacheData.setKey(key);
+                saveToDisk(cacheData);
+            } else {
+                deleteFromDisk(key);
+            }
+
+        } catch (Exception e) {
+            cacheData = loadFromSnap(key);
+        }
+
+        localCache.put(key, cacheData);
+
+        return cacheData.getValue();
+    }
+
+    private void deleteFromDisk(String key) {
+        // TODO
+        throw new UnsupportedOperationException();
+    }
+
+    private void saveToDisk(ConfigCacheData onfigInfo) {
+        // TODO 定义好存储格式
+        throw new UnsupportedOperationException();
     }
 
 
     /**
      * 从远程网络获取信息
-     * @param key
+     * @param url
      * @return
      */
-    private String loadFromRemote(String key) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+    private ConfigCacheData loadFromRemote(String url) {
+        String message = HttpUtil.invokeHttp(url);
+        return ConfigCacheData.parse(message);
+
+    }
+
+    private String getUrlStr(String key) {
+        // TODO 使用host方式调用
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -63,13 +96,9 @@ public class ConfigClient {
      * @param key
      * @return
      */
-    private String loadFromSnap(String key) {
+    private ConfigCacheData loadFromSnap(String key) {
         // TODO
         throw new UnsupportedOperationException("TODO");
     }
-
-
-
-
 
 }
