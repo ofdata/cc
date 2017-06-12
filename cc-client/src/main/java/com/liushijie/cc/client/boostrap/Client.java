@@ -14,6 +14,7 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.concurrent.GenericFutureListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +44,7 @@ public class Client {
     }
 
     public static Bootstrap configureBootstrap(Bootstrap b, EventLoopGroup eventLoop) {
-        ConnectionHandler connectionHandler = new ConnectionHandler();
+        final ConnectionHandler connectionHandler = new ConnectionHandler();
         b.group(eventLoop)
                 .channel(NioSocketChannel.class)
                 .remoteAddress(HOST, PORT)
@@ -62,9 +63,12 @@ public class Client {
     }
 
     public static void connect(Bootstrap b) {
-        b.connect().addListener((ChannelFuture future) -> {
-            if (future.cause() != null) {
-                logger.error("Failed to connect: " + future.cause());
+        b.connect().addListener(new GenericFutureListener<ChannelFuture>() {
+            @Override
+            public void operationComplete(ChannelFuture future) throws Exception {
+                if (future.cause() != null) {
+                    logger.error("Failed to connect: " + future.cause());
+                }
             }
         });
     }

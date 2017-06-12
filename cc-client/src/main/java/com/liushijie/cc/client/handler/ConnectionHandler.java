@@ -37,9 +37,12 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         final EventLoop loop = ctx.channel().eventLoop();
-        loop.schedule(() -> {
-            logger.info("channelUnregistered , reconnecting...");
-            Client.connect(Client.configureBootstrap(new Bootstrap(), loop));
+        loop.schedule(new Runnable() {
+            @Override
+            public void run() {
+                logger.info("channelUnregistered , reconnecting...");
+                Client.connect(Client.configureBootstrap(new Bootstrap(), loop));
+            }
         }, Client.retry_delay, TimeUnit.SECONDS);
     }
 

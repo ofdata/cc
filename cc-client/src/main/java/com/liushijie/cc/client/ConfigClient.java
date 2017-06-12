@@ -69,7 +69,11 @@ public class ConfigClient {
         throw new UnsupportedOperationException();
     }
 
-    private void saveToDisk(ConfigCacheData onfigInfo) {
+    public static void main(String[] args) {
+        System.out.println(ConfigCacheData.class.getClassLoader().getResource("").getPath());
+    }
+
+    private void saveToDisk(ConfigCacheData configInfo) {
         // TODO 定义好存储格式
         throw new UnsupportedOperationException();
     }

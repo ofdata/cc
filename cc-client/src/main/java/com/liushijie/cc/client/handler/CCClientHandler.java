@@ -21,7 +21,7 @@ public class CCClientHandler extends SimpleChannelInboundHandler<BaseMessage<Lon
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         String clientId = ctx.channel().localAddress().toString();
-        BaseMessage<String> register = new BaseMessage<>(clientId, DataType.REGISTER);
+        BaseMessage<String> register = new BaseMessage<String>(clientId, DataType.REGISTER);
         logger.info("channelActive..." + System.currentTimeMillis());
         ctx.channel().writeAndFlush(register).addListener(new GenericFutureListener<Future<? super Void>>() {
             @Override
